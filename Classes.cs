@@ -16,6 +16,8 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
             BuildStudentIndex();
         }
 
+        internal Dictionary<int, int> StudentIndex = new Dictionary<int, int>();
+
         string _fileName;
 
         public string FileName { get => _fileName; set // Automatically readjust StudentIndex when FileName is set
@@ -24,18 +26,18 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
                 BuildStudentIndex();
             }
         }
+
+        public int RecordsPerBlock => (int)Math.Ceiling((double)StudentIndex.Count / NumberOfBlocks);
         public int NumRec { get; set; }
         public int NumberOfBlocks { get; set; }
 
-        internal Dictionary<int, int> StudentIndex = new Dictionary<int, int>();
         int recSize { get; set; }
-        int recordsPerBlock { get; set; }
 
         public long FindPosition(int studentId, int blockPosition)
         {
-            int recordOffsetInBlock = studentId - (recordsPerBlock * (blockPosition - 1));
+            int recordOffsetInBlock = studentId - (RecordsPerBlock * (blockPosition - 1));
 
-            long position = (blockPosition - 1) * recordsPerBlock + recordOffsetInBlock - 1;
+            long position = (blockPosition - 1) * RecordsPerBlock + recordOffsetInBlock - 1;
             position *= (recSize + 2); //+2 Because of CR+LF
             return position;
         }
@@ -85,7 +87,6 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
                 }
                 File.Delete(_fileName);
                 File.Move(tempFileName, _fileName);
-                GetRecordsPerBlock();
                 Console.WriteLine($"{_fileName} is now resized!");
             }
             catch (Exception ex)
@@ -118,15 +119,10 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
 
         public int FindBlockNumber(int studentId)
         {
-            int blockNumber = (studentId - 1) / recordsPerBlock + 1;
+            int blockNumber = (studentId - 1) / RecordsPerBlock + 1;
 
             return blockNumber;
         }
 
-        internal int GetRecordsPerBlock()
-        {
-            recordsPerBlock = (int)Math.Ceiling((double)StudentIndex.Count / NumberOfBlocks);
-            return recordsPerBlock;
-        }
     }
 }

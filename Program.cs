@@ -37,6 +37,8 @@ class Program
                 {
                     long position = db.FindPosition(studentId, blockPosition);
 
+                    Console.WriteLine(position);
+
                     string studentInfo = db.ReadStudentInfoAtPosition(position);
 
                     Console.WriteLine($"Student {studentId} was found in block {blockPosition}");

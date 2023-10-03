@@ -10,21 +10,24 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
     public class StudentDatabase
     {
         public StudentDatabase() { } //Constructor without parameters
-        public StudentDatabase(string _fileName) //Constructor with file name
+        public StudentDatabase(string _tempName) //Constructor with file name
         {
-            FileName = _fileName;
+            _fileName = _tempName;
             BuildStudentIndex();
         }
 
-        public string FileName { get => FileName; set
+        string _fileName;
+
+        public string FileName { get => _fileName; set // Automatically readjust StudentIndex when FileName is set
             {
-                FileName = value;
+                _fileName = value;
                 BuildStudentIndex();
             }
         }
         public int NumRec { get; set; }
         public int NumberOfBlocks { get; set; }
-        public Dictionary<int, int> StudentIndex = new Dictionary<int, int>();
+
+        internal Dictionary<int, int> StudentIndex = new Dictionary<int, int>();
         int recSize { get; set; }
         int recordsPerBlock { get; set; }
 
@@ -57,15 +60,20 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
             }
         }
 
+        public Dictionary<int, int> GetStudentIndex()
+        {
+            return StudentIndex;
+        }
+
         public void ResizeStudentFile(int newRecSize)
         {
             recSize = newRecSize;
 
-            string tempFileName = $"temp_{FileName}";
+            string tempFileName = $"temp_{_fileName}";
 
             try
             {
-                using (StreamReader reader = new StreamReader(FileName))
+                using (StreamReader reader = new StreamReader(_fileName))
                 using (StreamWriter writer = new StreamWriter(tempFileName))
                 {
                     string line;
@@ -75,10 +83,10 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
                         writer.WriteLine(line);
                     }
                 }
-                File.Delete(FileName);
-                File.Move(tempFileName, FileName);
+                File.Delete(_fileName);
+                File.Move(tempFileName, _fileName);
                 GetRecordsPerBlock();
-                Console.WriteLine($"{FileName} is now resized!");
+                Console.WriteLine($"{_fileName} is now resized!");
             }
             catch (Exception ex)
             {
@@ -89,7 +97,7 @@ namespace AS2324_5G_IngrassiaSamuele_Studenti
 
         public string ReadStudentInfoAtPosition(long position)
         {
-            using (FileStream fileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read))
             {
                 //Seek(offset, origin);
                 fileStream.Seek(position, SeekOrigin.Begin);

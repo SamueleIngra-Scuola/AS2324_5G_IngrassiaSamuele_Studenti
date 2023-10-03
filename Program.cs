@@ -23,7 +23,7 @@ class Program
         Console.Write("Please insert Student ID: ");
         if (int.TryParse(Console.ReadLine(), out int studentId))
         {
-            if (db.StudentIndex.TryGetValue(studentId, out int blockNumber))
+            if (db.GetStudentIndex().TryGetValue(studentId, out int blockNumber))
             {
                 db.NumberOfBlocks = 7;
 

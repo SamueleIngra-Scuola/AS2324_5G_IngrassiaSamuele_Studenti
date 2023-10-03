@@ -11,20 +11,20 @@ namespace StudentDatabaseTest
         [Test]
         public void BuildDB()
         {
-            StudentDatabase db = new StudentDatabase("test.dat");
-            if (db.FileName == "test.dat")
+            StudentDatabase db = new StudentDatabase("test.dat"); 
+            if (db.FileName == "test.dat") //Check if filename was correct
                 Assert.Pass();
             else
                 Assert.Fail();
         }
 
-        public void BuildDB()
+        /*public void BuildDB()
         {
             StudentDatabase db = new StudentDatabase("test.dat");
             if (db.FileName == "test.dat")
                 Assert.Pass();
             else
                 Assert.Fail();
-        }
+        }*/
     }
 }
